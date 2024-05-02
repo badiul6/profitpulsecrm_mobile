@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:profitpulsecrm_mobile/app/modules/home/views/cs_view.dart';
 import 'package:profitpulsecrm_mobile/app/modules/home/views/landing_view.dart';
@@ -18,86 +19,92 @@ class HomeView extends GetView<HomeController> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-        body: SafeArea(
-            child: Center(
-      child: Padding(
-        padding: EdgeInsets.only(
-            top: screenHeight * 0.04,
-            bottom: screenHeight * 0.01,
-            left: screenWidth * 0.03,
-            right: screenWidth * 0.03),
-        child: Column(
-          children: <Widget>[
-            const Text('ProfitPulse', style: TextStyle(fontSize: 36)),
-            SizedBox(height: screenHeight * 0.017),
-            Expanded(
-              child: PageView(
-                controller: controller.pageController,
-                onPageChanged: controller.handlePageViewChanged,
-                children: const [
-                  LandingView(),
-                  MarketingView(),
-                  SaleView(),
-                  CsView()
-                ],
-              ),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: screenHeight * 0.07,
+              bottom: screenHeight * 0.01,
+              left: screenWidth * 0.03,
+              right: screenWidth * 0.03,
             ),
-            PageIndicator(
-              tabController: controller.tabController,
-              currentPageIndex: controller.currentPageIndex,
-              onUpdateCurrentPageIndex: controller.updateCurrentPageIndex,
-            ),
-            SizedBox(
-              height: screenHeight * 0.02,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
               children: <Widget>[
+                 SvgPicture.asset(
+          'assets/images/logo.svg', // Ensure this SVG handles its own colors or is styled appropriately
+        ),
+                SizedBox(height: screenHeight * 0.047),
                 Expanded(
-                  child: OutlinedButton(
-                      onPressed: () {
-                        Get.toNamed(Routes.LOGIN);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: colorScheme.primary,
-                        minimumSize: Size(double.infinity,
-                            screenHeight * 0.055), // Set height here
-                        side: BorderSide(color: colorScheme.primary),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
-                      ),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(fontSize: 20),
-                      )),
+                  child: PageView(
+                    controller: controller.pageController,
+                    onPageChanged: controller.handlePageViewChanged,
+                    children: const [
+                      LandingView(),
+                      MarketingView(),
+                      SaleView(),
+                      CsView(),
+                    ],
+                  ),
+                ),
+                PageIndicator(
+                  tabController: controller.tabController,
+                  currentPageIndex: controller.currentPageIndex,
+                  onUpdateCurrentPageIndex: controller.updateCurrentPageIndex,
                 ),
                 SizedBox(
-                  width: screenWidth * 0.01,
+                  height: screenHeight * 0.02,
                 ),
-                Expanded(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Get.toNamed(Routes.SIGNUP);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: colorScheme.background,
-                        backgroundColor: colorScheme.primary,
-                        minimumSize: Size(double.infinity,
-                            screenHeight * 0.055), // Set height here
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Get.offAllNamed(Routes.MAIN);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: colorScheme.primary,
+                          backgroundColor:colorScheme.surface, // Ensuring good contrast
+                          minimumSize: Size(double.infinity, screenHeight * 0.055),
+                          side: BorderSide(color: colorScheme.primary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
-                      child: const Text(
-                        'Signup',
-                        style: TextStyle(fontSize: 20),
-                      )),
-                )
+                    ),
+                    SizedBox(width: screenWidth * 0.01),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.toNamed(Routes.SIGNUP);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: colorScheme.background,
+                          backgroundColor: colorScheme.primary,
+                          minimumSize: Size(double.infinity, screenHeight * 0.055),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        child: const Text(
+                          'Signup',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
-    )));
+    );
   }
 }
 
@@ -123,8 +130,8 @@ class PageIndicator extends StatelessWidget {
         TabPageSelector(
           indicatorSize: 9,
           controller: tabController,
-          color: colorScheme.background,
-          selectedColor: colorScheme.primary,
+          color: colorScheme.background,  // less emphasis color
+          selectedColor: colorScheme.primary,  // emphasized color for selected
         ),
       ],
     );

@@ -2,8 +2,10 @@
     <queries>
     <package android:name="com.google.android.gm" /> // your android package name
     </queries>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
-        android:label="profitpulsecrm_mobile"
+        android:label="ProfitPulse"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

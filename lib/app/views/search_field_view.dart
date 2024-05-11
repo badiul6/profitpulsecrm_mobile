@@ -92,10 +92,14 @@ class SearchFieldView extends GetView {
               alignment: Alignment.topLeft,
               child: Material(
                 child: Container(
-                  color: colorScheme.surface, // Adjust background color here
+                  
+                  color: colorScheme.primary.withOpacity(0.1), // Adjust background color here
                   width: constraints.maxWidth, // Width of the LayoutBuilder's constraints
                   child: Scrollbar(
-                    child: ListView.builder(
+                    child: ListView.separated(
+                      separatorBuilder:(context, index) => Divider(
+                        thickness: 0,endIndent: 0,indent: 0,height: 0,
+                        color: colorScheme.onBackground.withOpacity(0.4),),
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
                       itemCount: options.length,

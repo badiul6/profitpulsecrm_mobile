@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:profitpulsecrm_mobile/app/views/search_field_action_view.dart';
 import 'package:profitpulsecrm_mobile/app/views/search_field_view.dart';
 import '../controllers/assign_agent_controller.dart';
 
@@ -8,13 +9,6 @@ class AssignAgentView extends GetView<AssignAgentController> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> validEmails = [
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-      // Add more emails as needed
-    ];
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     double screenWidth = mediaQueryData.size.width;
     double screenHeight = mediaQueryData.size.height;
@@ -39,54 +33,65 @@ class AssignAgentView extends GetView<AssignAgentController> {
                 children: [
                   Text(
                     'Assign an agent to a lead',
-                    style: TextStyle(fontSize: 22, color: colorScheme.onBackground),
+                    style: TextStyle(
+                        fontSize: 22, color: colorScheme.onBackground),
                   ),
                   SizedBox(height: screenHeight * 0.04),
-                  SearchFieldView(
-                    validEmails: validEmails,
-                    labelText: 'Campaign Name',
-                    getInput: (selectedEmail) {
-                      print("Selected Email: $selectedEmail");
-                      // Perform other actions
-                    },
-                    isSelected: (bool isSelected) {
-                      controller.isSelected.value = isSelected;
-                    },
+                  Obx(
+                    () => SearchFieldActionView(
+                      validEmails: controller.campaigns,
+                      labelText: 'Search a campaign',
+                      isAgentLoading: controller.isAgentLoading.value,
+                      getInput: (selectedCampaign) {
+                        controller.campaignName.value = selectedCampaign;
+                        controller.getAllCampaignLeads(selectedCampaign);
+                      },
+                    ),
                   ),
+                  Obx(() => Visibility(
+                        visible: controller.isZeroLeads.value,
+                        child: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('No lead available for this campaign')),
+                      )),
                   SizedBox(height: screenHeight * 0.03),
                   Obx(() => Visibility(
                         visible: controller.isSelected.value,
                         child: SearchFieldView(
-                          validEmails: validEmails,
-                          labelText: 'Contact email',
+                          validEmails: controller.leads,
+                          labelText: 'Search a lead',
                           getInput: (selectedEmail) {
-                            print("Selected Email: $selectedEmail");
-                            // Perform other actions
+                            controller.leadEmail.value = selectedEmail;
                           },
                         ),
                       )),
                   SizedBox(height: screenHeight * 0.03),
                   SearchFieldView(
-                    validEmails: validEmails,
-                    labelText: 'Agent email',
+                    validEmails: controller.saleAgents,
+                    labelText: 'Search an agent',
                     getInput: (selectedEmail) {
-                      print("Selected Email: $selectedEmail");
-                      // Perform other actions
+                      controller.agentEmail.value = selectedEmail;
                     },
                   ),
                   SizedBox(height: screenHeight * 0.06),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: colorScheme.primary,
-                          onPrimary: colorScheme.onPrimary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                          minimumSize: Size(double.infinity, screenHeight * 0.07)),
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: colorScheme.onPrimary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          minimumSize:
+                              Size(double.infinity, screenHeight * 0.07)),
                       onPressed: () {
                         if (controller.formKey.currentState!.validate()) {
-                          // Form submission logic
+                          controller.assignAgent();
                         }
                       },
-                      child: const Text('Assign')),
+                      child: Obx(() => controller.isLoading.value
+                          ? CircularProgressIndicator(
+                              color: colorScheme.background,
+                            )
+                          : const Text('Assign'))),
                 ],
               ),
             ),

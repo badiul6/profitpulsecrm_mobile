@@ -13,7 +13,10 @@ dependencies:
   flutter_svg: ^2.0.10+1
   external_app_launcher: ^4.0.0
   image_picker: ^1.0.8
-  intl_phone_number_input: ^0.7.4
+  http: ^1.2.0
+  flutter_secure_storage: ^9.0.0
+  shimmer: ^3.0.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies: 
   flutter_lints: 3.0.2
@@ -24,4 +27,17 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - .env
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf
+        - asset: fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: fonts/Roboto-Black.ttf
+          weight: 900
+        - asset: fonts/Roboto-Thin.ttf
+          weight: 100
+        - asset: fonts/Roboto-Bold.ttf
+          weight: 700
 

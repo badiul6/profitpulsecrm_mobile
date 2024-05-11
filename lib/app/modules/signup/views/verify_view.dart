@@ -56,8 +56,7 @@ class VerifyView extends GetView<SignupController> {
             await LaunchApp.openApp(androidPackageName: 'com.google.android.gm');
           },
           style: ElevatedButton.styleFrom(
-            // primary: colorScheme.primary, // Button background color
-            // onPrimary: colorScheme.onPrimary, // Button text color
+       
                             minimumSize: Size(screenWidth * 0.02, screenHeight * 0.04),
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.033),
                 backgroundColor: colorScheme.primary,

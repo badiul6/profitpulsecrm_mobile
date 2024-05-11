@@ -82,17 +82,17 @@ class AddContactView extends GetView<AddContactController> {
                   SizedBox(height: screenHeight * 0.06),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: colorScheme.primary,
-                      onPrimary: colorScheme.onPrimary,
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       minimumSize: Size(double.infinity, screenHeight * 0.07),
                     ),
                     onPressed: () {
                       if (controller.formKey.currentState!.validate()) {
-                        // Handle form submission
+                        controller.addContact();
                       }
                     },
-                    child: const Text('Create'),
+                    child: Obx(() => controller.isLoading.value?CircularProgressIndicator(color: colorScheme.background,):const Text('Create')),
                   ),
                 ],
               ),

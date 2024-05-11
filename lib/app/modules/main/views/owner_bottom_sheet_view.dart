@@ -46,6 +46,15 @@ class OwnerBottomSheetView extends GetView<MainController> {
               ),
               _buildIconButton(
                 context,
+                icon: Icons.business_center,
+                text: 'Product',
+                onTap: () {
+                  Navigator.pop(context);
+                  Get.toNamed(Routes.ADD_PRODUCT);
+                }
+              ),
+              _buildIconButton(
+                context,
                 icon: Icons.handshake_rounded,
                 text: 'Deal',
                 onTap: () {
@@ -97,11 +106,15 @@ class OwnerBottomSheetView extends GetView<MainController> {
           const Divider(),
           SizedBox(height: screenHeight * 0.015),
           Center(
+              child: TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
             child: Text(
               "Cancel",
               style: TextStyle(fontSize: 18, color: colorScheme.error),
-            )
-          )
+            ),
+          ))
         ],
       ),
     );

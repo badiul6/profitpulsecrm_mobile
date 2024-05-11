@@ -8,24 +8,6 @@ class AddDealView extends GetView<AddDealController> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> validEmails = [
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com', 
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com', 
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-    ];
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     double screenWidth = mediaQueryData.size.width;
     double screenHeight = mediaQueryData.size.height;
@@ -53,21 +35,19 @@ class AddDealView extends GetView<AddDealController> {
                       style: TextStyle(fontSize: 22, color: colorScheme.onBackground),
                     ),
                     SizedBox(height: screenHeight * 0.04),
-                    SearchFieldView(
-                      validEmails: validEmails,
+                   SearchFieldView(
+                      validEmails: controller.salesAgents,
                       labelText: 'Agent email',
                       getInput: (selectedEmail) {
-                        print("Selected Email: $selectedEmail");
-                        // Update the state or perform other actions
+                        controller.agentEmail.value=selectedEmail;
                       },
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     SearchFieldView(
-                      validEmails: validEmails,
+                      validEmails: controller.contacts,
                       labelText: 'Contact email',
                       getInput: (selectedEmail) {
-                        print("Selected Email: $selectedEmail");
-                        // Update the state or perform other actions
+                        controller.contactEmail.value=selectedEmail;
                       },
                     ),
                     SizedBox(height: screenHeight * 0.06),
@@ -83,10 +63,10 @@ class AddDealView extends GetView<AddDealController> {
                             )),
                         onPressed: () {
                           if (controller.formKey.currentState!.validate()) {
-                            // Implementation of deal creation logic
+                          controller.addDeal();
                           }
                         },
-                        child: const Text('Create')),
+                        child: Obx(() => controller.isLoading.value? CircularProgressIndicator(color: colorScheme.background,): const Text('Create'))),
                   ],
                 ),
               ),

@@ -25,6 +25,8 @@ class AddUserView extends GetView<AddUserController> {
         ),
         labelText: labelText,
         labelStyle: TextStyle(color: colorScheme.onSurface),
+        floatingLabelStyle: TextStyle(color: colorScheme.primary),
+
       );
     }
 
@@ -37,7 +39,7 @@ class AddUserView extends GetView<AddUserController> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              top: screenHeight * 0.03,
+              top: screenHeight * 0.035,
               right: screenWidth * 0.03,
               left: screenWidth * 0.03),
           child: Center(
@@ -50,7 +52,7 @@ class AddUserView extends GetView<AddUserController> {
                     style: TextStyle(fontSize: 22, color: colorScheme.onBackground),
                   ),
                   SizedBox(
-                    height: screenHeight * 0.06,
+                    height: screenHeight * 0.05,
                   ),
                   TextFormField(
                     controller: controller.emailController,
@@ -101,10 +103,10 @@ class AddUserView extends GetView<AddUserController> {
                     ),
                     onPressed: () {
                       if (controller.formKey.currentState!.validate()) {
-                        // Handle form submission
+                        controller.addUser();
                       }
                     },
-                    child: const Text('Create'),
+                    child:  Obx(() => controller.isLoading.value? CircularProgressIndicator(color: colorScheme.background,):const Text('Create'),),
                   ),
                 ],
               ),

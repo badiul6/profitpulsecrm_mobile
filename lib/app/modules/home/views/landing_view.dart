@@ -12,32 +12,36 @@ class LandingView extends GetView {
     double screenHeight = mediaQueryData.size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    return Column(
-      children: [
-        SvgPicture.asset(
-          'assets/images/welcome_rocket.svg', // Ensure this SVG handles its own colors or is styled appropriately
-        ),
-        SizedBox(height: screenHeight * 0.017),
-        Text(
-          'ProfitPulse CRM',
-          style: TextStyle(
-            fontSize: 26,
-            color: colorScheme.onBackground, // Suitable color for primary text
-          )
-        ),
-        SizedBox(height: screenHeight * 0.01),
-        SizedBox(
-          width: screenWidth * 0.9,
-          child: Text(
-            'Powerful alone. Even better together. Businesses grow faster when they have a complete Growth Stack for Marketing, Sales and Customer Service from ProfitPulse.',
-            style: TextStyle(
-              fontSize: 13,
-              color: colorScheme.onBackground, // Ensuring readability on your chosen background
-            ),
-            textAlign: TextAlign.center,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            'assets/images/landing_page.svg',
+            height: screenHeight*0.3,
+             // Ensure this SVG handles its own colors or is styled appropriately
           ),
-        ),
-      ],
+          SizedBox(height: screenHeight * 0.017),
+          Text(
+            'ProfitPulse CRM',
+            style: TextStyle(
+              fontSize: 26,
+              color: colorScheme.onBackground, // Suitable color for primary text
+            )
+          ),
+          SizedBox(height: screenHeight * 0.01),
+          SizedBox(
+            width: screenWidth * 0.9,
+            child: Text(
+              'Powerful alone. Even better together. Businesses grow faster when they have a complete Growth Stack for Marketing, Sales and Customer Service from ProfitPulse.',
+              style: TextStyle(
+                fontSize: 13,
+                color: colorScheme.onBackground, // Ensuring readability on your chosen background
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

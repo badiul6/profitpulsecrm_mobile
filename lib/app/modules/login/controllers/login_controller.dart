@@ -1,13 +1,67 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:profitpulsecrm_mobile/app/data/login_response.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginController extends GetxController {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  RxBool isPasswordVisible= false.obs;
 
- 
+
+  RxBool isPasswordVisible = false.obs;
+  RxBool isLoading = false.obs;
+  final serverUrl = dotenv.env['SERVERURL'];
+
+  final storage = const FlutterSecureStorage();
+
+
+  Future<int> login({required String email, required String password}) async {
+    isLoading.value = true;
+    var body = jsonEncode({
+      'email': email,
+      'password': password,
+    });
+    try {
+      var response = await http.post(Uri.parse('$serverUrl/auth/login'),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body);
+      isLoading.value = false;
+
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        //saving cookie
+        var auth = response.headers['set-cookie'];
+        await storage.write(key: 'cookie', value: auth);
+
+        var loginResponse = LoginResponse.fromJson(data);
+        //saving role
+        if (loginResponse.roles.contains('OWNER')) {
+          await storage.write(key: 'role', value: 'OWNER');
+        } else if (loginResponse.roles.contains('MAGENT')) {
+          await storage.write(key: 'role', value: 'MAGENT');
+        } else if (loginResponse.roles.contains('SHEAD')) {
+          await storage.write(key: 'role', value: 'SHEAD');
+        } else if (loginResponse.roles.contains('SAGENT')) {
+          await storage.write(key: 'role', value: 'SAGENT');
+        } else if (loginResponse.roles.contains('CSAGENT')) {
+          await storage.write(key: 'role', value: 'CSAGENT');
+        }
+
+        if (!loginResponse.isCompleted) {
+          await storage.write(key: 'isCompleted', value: 'false');
+          return 204;
+        }
+        await storage.write(key: 'isCompleted', value: 'true');
+      }
+      return response.statusCode;
+    } catch (e) {
+      isLoading.value = false;
+
+      return 400;
+    }
+  }
 
   String? validateEmail(String? email) {
     if (email == null || email.isEmpty) {
@@ -48,10 +102,4 @@ class LoginController extends GetxController {
     return null;
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-    emailController.dispose();
-    passwordController.dispose();
-  }
 }

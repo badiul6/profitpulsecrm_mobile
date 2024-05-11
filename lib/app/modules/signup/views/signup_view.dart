@@ -5,6 +5,7 @@ import 'package:profitpulsecrm_mobile/app/modules/signup/views/verify_view.dart'
 import 'package:profitpulsecrm_mobile/app/routes/app_pages.dart';
 
 import '../controllers/signup_controller.dart';
+
 class SignupView extends GetView<SignupController> {
   const SignupView({super.key});
 
@@ -62,9 +63,10 @@ class SignupView extends GetView<SignupController> {
                               ),
                             ),
                             SizedBox(height: screenHeight * 0.05),
-                           SvgPicture.asset(
-          'assets/images/logo.svg', // Ensure this SVG handles its own colors or is styled appropriately
-        ),
+                            SvgPicture.asset(
+                              'assets/images/logo.svg', // Ensure this SVG handles its own colors or is styled appropriately
+                            ),
+                            const Text('Empower Your Business, Join ProfitPulse!'),
                             SizedBox(height: screenHeight * 0.05),
                             Row(
                               mainAxisSize: MainAxisSize.max,
@@ -116,8 +118,10 @@ class SignupView extends GetView<SignupController> {
                             TextFormField(
                               controller: controller.rePasswordController,
                               validator: controller.validatePassword,
-                              obscureText: !controller.isRePasswordVisible.value,
-                              decoration: getDecoration('Reenter Password').copyWith(
+                              obscureText:
+                                  !controller.isRePasswordVisible.value,
+                              decoration:
+                                  getDecoration('Reenter Password').copyWith(
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     controller.isRePasswordVisible.value =
@@ -144,26 +148,37 @@ class SignupView extends GetView<SignupController> {
                                   screenHeight * 0.07,
                                 ),
                               ),
-                              onPressed: () {
-                                // if (controller.formKey.currentState!.validate()) {
-                                  controller.updatePage(2);
-                                // }
+                              onPressed: () async {
+                                if (controller.formKey.currentState!.validate()) {
+                                  String fullname= '${controller.firstNameController.text} ${controller.lastNameController.text}';
+                                  await controller.signup(email: controller.emailController.text, fullname: fullname, 
+                                  password: controller.passwordController.text);
+                      
+                                }
                               },
-                              child: const Text('Sign up'),
+                              child: controller.isLoading.value?CircularProgressIndicator(
+                                color: colorScheme.background,
+                              ): const Text('Sign up'),
                             ),
                             SizedBox(height: screenHeight * 0.02),
                             Row(
                               children: [
-                                 Expanded(child: Divider(
-                                   color: colorScheme.onSurface.withOpacity(0.2), // Consistent with the other divider
-        thickness: 1,
+                                Expanded(
+                                    child: Divider(
+                                  color: colorScheme.onSurface.withOpacity(
+                                      0.2), // Consistent with the other divider
+                                  thickness: 1,
                                 )),
                                 SizedBox(width: screenWidth * 0.03),
-                                Text('Or', style: TextStyle(color: colorScheme.onBackground)),
+                                Text('Or',
+                                    style: TextStyle(
+                                        color: colorScheme.onBackground)),
                                 SizedBox(width: screenWidth * 0.03),
-                                 Expanded(child: Divider(
-                                   color: colorScheme.onSurface.withOpacity(0.2), // Consistent with the other divider
-        thickness: 1,
+                                Expanded(
+                                    child: Divider(
+                                  color: colorScheme.onSurface.withOpacity(
+                                      0.2), // Consistent with the other divider
+                                  thickness: 1,
                                 ))
                               ],
                             ),
@@ -172,16 +187,19 @@ class SignupView extends GetView<SignupController> {
                               children: [
                                 Text(
                                   "Already have an account?",
-                                  style: TextStyle(color: colorScheme.onBackground),
+                                  style: TextStyle(
+                                      color: colorScheme.onBackground),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Get.offNamed(Routes.LOGIN);
                                   },
-                                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero),
                                   child: Text(
                                     'Log in',
-                                    style: TextStyle(color: colorScheme.primary),
+                                    style:
+                                        TextStyle(color: colorScheme.primary),
                                   ),
                                 )
                               ],
@@ -189,8 +207,9 @@ class SignupView extends GetView<SignupController> {
                           ],
                         ),
                       )
-                    : const VerifyView(
-                        name: 'Badiul', email: 'badiuljamal3208@gmail.com'),
+                    :  Obx(() => 
+                    VerifyView(
+                        name: controller.firstNameController.text, email: controller.verifyEmail.value)),
               ),
             ),
           ),

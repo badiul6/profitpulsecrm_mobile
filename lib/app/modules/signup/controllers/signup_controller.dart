@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:profitpulsecrm_mobile/app/views/snackbar_view.dart';
 
 class SignupController extends GetxController {
-
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
 
@@ -10,35 +14,74 @@ class SignupController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController rePasswordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  RxString verifyEmail=''.obs;
   RxBool isRePasswordValid = false.obs;
-  RxBool isPasswordVisible= false.obs;
-  RxBool isRePasswordVisible= false.obs;
-  RxInt pageNo= 1.obs;
+  RxBool isPasswordVisible = false.obs;
+  RxBool isRePasswordVisible = false.obs;
+  RxInt pageNo = 1.obs;
+  final serverUrl = dotenv.env['SERVERURL'];
+  RxBool isLoading = false.obs;
 
-  updatePage(int page){
-    pageNo.value= page;
+  Future<void> signup(
+      {required String email,
+      required String fullname,
+      required String password}) async {
+    isLoading.value = true;
+    var body = jsonEncode({
+      'email': email,
+      'fullname': fullname,
+      'password': password,
+      'roles': ['OWNER', 'MAGENT', 'SHEAD', 'SAGENT', 'CSAGENT'],
+    });
+    try {
+      var response = await http.post(Uri.parse('$serverUrl/auth/signup'),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body);
+
+        isLoading.value=false;
+      if (response.statusCode == 201) {
+        verifyEmail.value=email;
+        updatePage(2);
+        SnackbarHelper.showCustomSnackbar(title: 'Success', message: 'User created sucessfully',type: SnackbarType.success);
+      } else if(response.statusCode==409) {
+          SnackbarHelper.showCustomSnackbar(title: 'Error', message: 'Email already in use',type: SnackbarType.error);
+      }
+    } catch (e) {
+      isLoading.value=false;
+
+      SnackbarHelper.showCustomSnackbar(title: 'Error', message: 'Please try again',type: SnackbarType.error);
+
+    }
+
+  }
+
+  updatePage(int page) {
+    pageNo.value = page;
   }
 
   String? validateFullname(String? fullname) {
-      if (fullname == null || fullname.isEmpty) {
-        return 'Please enter your fullname';
-      }
-      return null;
+    if (fullname == null || fullname.isEmpty) {
+      return 'Please enter your fullname';
     }
-  
-  String? validateEmail(String? email) {
-      if (email == null || email.isEmpty) {
-        return 'Please enter your email';
-      }
-      bool isValidEmail =
-          RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+    return null;
+  }
 
-      if (!isValidEmail) {
-        return 'Invalid email address';
-      }
-      return null;
+  String? validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      return 'Please enter your email';
     }
-    String? validatePassword(String? password) {
+    bool isValidEmail =
+        RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+
+    if (!isValidEmail) {
+      return 'Invalid email address';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? password) {
     if (password == null || password.isEmpty) {
       return 'Password cannot be empty';
     }
@@ -61,13 +104,11 @@ class SignupController extends GetxController {
     if (!regexSpecial.hasMatch(password)) {
       return 'Password must contain at least one special character';
     }
-     if (passwordController.text != rePasswordController.text) {
-    return 'Passwords do not match';
-  }
+    if (passwordController.text != rePasswordController.text) {
+      return 'Passwords do not match';
+    }
     return null;
   }
-
-
 
   @override
   void onClose() {
@@ -76,5 +117,4 @@ class SignupController extends GetxController {
     passwordController.dispose();
     rePasswordController.dispose();
   }
-
 }

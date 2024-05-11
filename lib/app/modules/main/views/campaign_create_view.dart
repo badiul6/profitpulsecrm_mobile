@@ -3,18 +3,18 @@ import 'package:get/get.dart';
 import 'package:profitpulsecrm_mobile/app/modules/main/controllers/main_controller.dart';
 
 class CampaignCreateView extends GetView<MainController> {
-  const CampaignCreateView({super.key});
+  CampaignCreateView({super.key});
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
-    InputDecoration _getInputDecoration(String labelText) {
+    InputDecoration getInputDecoration(String labelText) {
       return InputDecoration(
         labelText: labelText,
-                                        floatingLabelStyle: TextStyle(color: colorScheme.primary),
-
+        floatingLabelStyle: TextStyle(color: colorScheme.primary),
         labelStyle: TextStyle(color: colorScheme.onSurface),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: colorScheme.onSurface.withOpacity(0.5)),
@@ -29,16 +29,14 @@ class CampaignCreateView extends GetView<MainController> {
     }
 
     return AlertDialog(
-      title: Text('Start a new campaign'),
+      title: const Text('Start a new campaign'),
       backgroundColor: colorScheme.surface,
-      content: SingleChildScrollView(
-        child: Form(
-          key: controller.campaignFormKey,
-          child: TextFormField(
-            controller: controller.campaignController,
-            validator: controller.validatecampaign,
-            decoration: _getInputDecoration('Campaign Name'),
-          ),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          controller: controller.campaignController,
+          validator: controller.validatecampaign,
+          decoration: getInputDecoration('Campaign Name'),
         ),
       ),
       actions: <Widget>[
@@ -49,15 +47,21 @@ class CampaignCreateView extends GetView<MainController> {
             Navigator.of(context).pop(); // dismiss dialog
           },
         ),
-        TextButton(
-          child: Text('Save', style: TextStyle(color: colorScheme.primary)),
-          onPressed: () {
-            if (controller.campaignFormKey.currentState!.validate()) {
-              // Handle save action
-              Navigator.of(context).pop(); // Optionally close the dialog on save
-            }
-          },
-        ),
+        Obx(
+          () => controller.isSavingCampaign.value
+              ? CircularProgressIndicator(
+                  color: colorScheme.primary,
+                )
+              : TextButton(
+                  child: Text('Save',
+                      style: TextStyle(color: colorScheme.primary)),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      controller.addCampaign();
+                    }
+                  },
+                ),
+        )
       ],
     );
   }

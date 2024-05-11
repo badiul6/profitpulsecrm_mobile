@@ -8,24 +8,7 @@ class AddSaleView extends GetView<AddSaleController> {
 
   @override
   Widget build(BuildContext context) {
-        List<String> validEmails = [
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-      'example1@example.com',
-      'example2@example.com',
-      'info@example.com',
-      'contact@example.com',
-    ];
+
 
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     double screenWidth = mediaQueryData.size.width;
@@ -44,7 +27,7 @@ class AddSaleView extends GetView<AddSaleController> {
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
         ),
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       );
     }
 
@@ -68,11 +51,12 @@ class AddSaleView extends GetView<AddSaleController> {
                     style: TextStyle(fontSize: 22, color: colorScheme.onSurface)),
                 SizedBox(height: screenHeight * 0.03),
                 SearchFieldView(
-                  validEmails: validEmails,  // Assuming you have a validEmails list in controller
+                  validEmails: controller.contacts,  // Assuming you have a validEmails list in controller
                   labelText: 'Contact Email',
-                  getInput: (s){
-
-                  },  // Assuming method in controller
+                  getInput: (s){  
+                    controller.contactEmail.value= s;
+                  },
+                  // Assuming method in controller
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Row(
@@ -162,20 +146,25 @@ class AddSaleView extends GetView<AddSaleController> {
                   children: List.generate(
                     controller.products.length,
                     (index) => ProductForm(
+                            key: ValueKey(controller.products[index].hashCode), // Unique key for each product
                       product: controller.products[index],
                       index: index,
-                      onRemove: () => controller.removeProduct(index)),
+                      onRemove: () { 
+                        controller.removeProduct(index);
+                        }),
                   ),
                 )),
                 SizedBox(height: screenHeight * 0.02),
-                ElevatedButton(
+                Obx(() => ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      primary: colorScheme.primary,
-                      onPrimary: colorScheme.onPrimary,
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       minimumSize: Size(double.infinity, screenHeight * 0.07)),
-                  onPressed: controller.submitForm,
-                  child: const Text('Create')),
+                  onPressed: (){
+                    controller.submitForm();
+                  },
+                  child: controller.isLoading.value?CircularProgressIndicator(color: colorScheme.background,): const Text('Create')),),
                 SizedBox(height: screenHeight * 0.02),
               ],
             ),
@@ -187,17 +176,17 @@ class AddSaleView extends GetView<AddSaleController> {
 }
 
 
-class ProductForm extends StatelessWidget {
+class ProductForm extends GetView<AddSaleController> {
   final Product product;
   final VoidCallback onRemove;
   final int index;
 
   const ProductForm({
-    super.key,
+required Key key,
     required this.product,
     required this.onRemove,
     required this.index
-  });
+ }) : super(key: key); 
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +195,7 @@ class ProductForm extends StatelessWidget {
     double screenHeight = mediaQueryData.size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    InputDecoration _getInputDecoration(String label) {
+    InputDecoration getInputDecoration(String label) {
       return InputDecoration(
         labelText: label,
                                 floatingLabelStyle: TextStyle(color: colorScheme.primary),
@@ -218,7 +207,7 @@ class ProductForm extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: colorScheme.primary, width: 2.0),
         ),
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       );
     }
 
@@ -240,11 +229,13 @@ class ProductForm extends StatelessWidget {
             )
           ],
         ),
-        TextFormField(
-          controller: product.nameController,
-          decoration: _getInputDecoration('Product Name'),
-          validator: (value) => value == null || value.isEmpty ? "Cannot be empty" : null,
-        ),
+       SearchFieldView(
+                validEmails: controller.prodList,  // Use product list instead of email list
+                labelText: 'Product Name',
+                getInput: (selection) {
+                  product.nameController.text = selection;
+                },
+              ),
         SizedBox(height: screenHeight * 0.02),
         Row(
           children: [
@@ -252,8 +243,15 @@ class ProductForm extends StatelessWidget {
               child: TextFormField(
                 controller: product.quantityController,
                 keyboardType: TextInputType.number,
-                decoration: _getInputDecoration('Quantity'),
-                validator: (value) => value == null || value.isEmpty ? "Cannot be empty" : null,
+                decoration: getInputDecoration('Quantity'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return "Cannot be empty";
+                  final int enteredQuantity = int.tryParse(value) ?? 0;
+                  if (enteredQuantity > controller.productQuantities[product.nameController.text]!) {
+                    return "Stock has ${controller.productQuantities[product.nameController.text]} items left";
+                  }
+                  return null;
+                },
               ),
             ),
             SizedBox(width: screenWidth * 0.02),
@@ -261,7 +259,7 @@ class ProductForm extends StatelessWidget {
               child: TextFormField(
                 keyboardType: TextInputType.number,
                 controller: product.discountController,
-                decoration: _getInputDecoration('Discount'),
+                decoration: getInputDecoration('Discount'),
                 validator: (value) => value == null || value.isEmpty ? "Cannot be empty" : null,
               ),
             ),

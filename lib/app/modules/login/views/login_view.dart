@@ -3,9 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:profitpulsecrm_mobile/app/modules/login/controllers/login_controller.dart';
 import 'package:profitpulsecrm_mobile/app/routes/app_pages.dart';
+import 'package:profitpulsecrm_mobile/app/views/snackbar_view.dart';
 
 class LoginView extends GetView<LoginController> {
-  const LoginView({super.key});
+    LoginView({super.key});
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController= TextEditingController();
+  final TextEditingController _passwordController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class LoginView extends GetView<LoginController> {
                   right: screenWidth * 0.04,
                   left: screenWidth * 0.04),
               child: Form(
-                key: controller.formKey,
+                key: _formKey,
                 child: Column(
                   children: [
                     SvgPicture.asset(
@@ -49,14 +53,14 @@ class LoginView extends GetView<LoginController> {
                     ),
                     SizedBox(height: screenHeight * 0.05),
                     TextFormField(
-                      controller: controller.emailController,
+                      controller: _emailController,
                       validator: controller.validateEmail,
                       decoration: getInputDecoration('Email Address'),
                     ),
                     SizedBox(height: screenHeight * 0.039),
                     Obx(
                       () => TextFormField(
-                        controller: controller.passwordController,
+                        controller: _passwordController,
                         validator: controller.validatePassword,
                         obscureText:
                             controller.isPasswordVisible.value ? false : true,
@@ -92,12 +96,44 @@ class LoginView extends GetView<LoginController> {
                             borderRadius: BorderRadius.circular(5)),
                         minimumSize: Size(double.infinity, screenHeight * 0.07),
                       ),
-                      onPressed: () {
-                        if (controller.formKey.currentState!.validate()) {
-                          Get.toNamed(Routes.PROFILE);
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          int statusCode = await controller.login(
+                              email: _emailController.text,
+                              password: _passwordController.text);
+                          if (statusCode == 200) {
+                            Get.offAllNamed(Routes.MAIN);
+                          } else if (statusCode == 204) {
+                           
+                            Get.offAllNamed(Routes.PROFILE);
+                          } else if (statusCode == 422) {
+                            SnackbarHelper.showCustomSnackbar(
+                                title: 'Error',
+                                message: "User not verified",
+                                type: SnackbarType.error);
+                          } else if (statusCode == 403) {
+                            SnackbarHelper.showCustomSnackbar(
+                                title: 'Error',
+                                message: "Password doesn't match",
+                                type: SnackbarType.error);
+                          } else if (statusCode == 404) {
+                            SnackbarHelper.showCustomSnackbar(
+                                title: 'Error',
+                                message: 'User not found',
+                                type: SnackbarType.error);
+                          } else {
+                            SnackbarHelper.showCustomSnackbar(
+                                title: 'Error',
+                                message: 'Please try again',
+                                type: SnackbarType.error);
+                          }
                         }
                       },
-                      child: const Text('Log in'),
+                      child: Obx(() => controller.isLoading.value
+                          ? CircularProgressIndicator(
+                              color: colorScheme.background,
+                            )
+                          : const Text('Log in')),
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     Row(

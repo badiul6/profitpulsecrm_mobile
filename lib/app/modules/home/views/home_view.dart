@@ -19,16 +19,16 @@ class HomeView extends GetView<HomeController> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: screenHeight * 0.07,
-              bottom: screenHeight * 0.01,
-              left: screenWidth * 0.03,
-              right: screenWidth * 0.03,
-            ),
-            child: Column(
+      body: 
+       Padding(
+         padding: EdgeInsets.only(
+            top: screenHeight * 0.10,
+            bottom: screenHeight * 0.01,
+            left: screenWidth * 0.03,
+            right: screenWidth * 0.03,
+          ),
+         child: Center(
+           child: Column(
               children: <Widget>[
                  SvgPicture.asset(
           'assets/images/logo.svg', // Ensure this SVG handles its own colors or is styled appropriately
@@ -60,7 +60,7 @@ class HomeView extends GetView<HomeController> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () {
-                          Get.offAllNamed(Routes.MAIN);
+                          Get.toNamed(Routes.LOGIN);
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: colorScheme.primary,
@@ -101,9 +101,8 @@ class HomeView extends GetView<HomeController> {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
+         ),
+       ),
     );
   }
 }

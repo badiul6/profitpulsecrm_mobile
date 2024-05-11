@@ -8,10 +8,7 @@ class AddTicketView extends GetView<AddTicketController> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> validEmails = [
-      'example1@example.com', 'example2@example.com', 'info@example.com', 'contact@example.com',
-      // Add more emails as needed
-    ];
+    
 
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     double screenWidth = mediaQueryData.size.width;
@@ -66,15 +63,16 @@ class AddTicketView extends GetView<AddTicketController> {
                   TextFormField(
                     controller: controller.issueController,
                     validator: controller.validateIssue,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     decoration: getInputDecoration('Issue'),
                   ),
                   SizedBox(height: screenHeight * 0.04),
                   SearchFieldView(
-                    validEmails: validEmails,
+                    validEmails: controller.contacts,
                     labelText: 'Contact email',
                     getInput: (selectedEmail) {
-                      print("Selected Email: $selectedEmail");
-                      // Implement additional logic as needed
+                      controller.contactEmail.value= selectedEmail;
                     },
                   ),
                   SizedBox(height: screenHeight * 0.06),
@@ -89,10 +87,10 @@ class AddTicketView extends GetView<AddTicketController> {
                     ),
                     onPressed: () {
                       if (controller.formKey.currentState!.validate()) {
-                        // Form submission logic
+                        controller.addTicket();
                       }
                     },
-                    child: const Text('Create'),
+                    child: Obx(() => controller.isLoading.value? CircularProgressIndicator(color: colorScheme.background,):const Text('Create')),
                   ),
                 ],
               ),

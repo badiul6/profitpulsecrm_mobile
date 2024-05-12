@@ -79,13 +79,17 @@ class LoginView extends GetView<LoginController> {
                         ),
                       ),
                     ),
-                    SizedBox(height: screenHeight * 0.01),
+                    // SizedBox(height: screenHeight * 0.01),
                     Align(
                       alignment: Alignment.bottomLeft,
-                      child: Text(
+                      child: TextButton(
+                        onPressed: () {
+                          Get.toNamed(Routes.FORGOT_PASSWORD);
+                        },
+                        child: Text(
                         'Forgot your password?',
                         style: TextStyle(color: colorScheme.primary),
-                      ),
+                      ),)
                     ),
                     SizedBox(height: screenHeight * 0.05),
                     ElevatedButton(

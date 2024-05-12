@@ -24,6 +24,7 @@ abstract class Routes {
   static const ADD_PRODUCT = _Paths.ADD_PRODUCT;
   static const SPLASH_SCREEN = _Paths.SPLASH_SCREEN;
   static const SEARCH_TEAM = _Paths.SEARCH_TEAM;
+  static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
 }
 
 abstract class _Paths {
@@ -49,4 +50,5 @@ abstract class _Paths {
   static const ADD_PRODUCT = '/add-product';
   static const SPLASH_SCREEN = '/splash-screen';
   static const SEARCH_TEAM = '/search-team';
+  static const FORGOT_PASSWORD = '/forgot-password';
 }

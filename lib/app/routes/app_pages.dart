@@ -14,6 +14,8 @@ import '../modules/addUser/bindings/add_user_binding.dart';
 import '../modules/addUser/views/add_user_view.dart';
 import '../modules/assignAgent/bindings/assign_agent_binding.dart';
 import '../modules/assignAgent/views/assign_agent_view.dart';
+import '../modules/forgotPassword/bindings/forgot_password_binding.dart';
+import '../modules/forgotPassword/views/forgot_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -155,6 +157,11 @@ class AppPages {
       name: _Paths.SEARCH_TEAM,
       page: () => const SearchTeamView(),
       binding: SearchTeamBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
     ),
   ];
 }

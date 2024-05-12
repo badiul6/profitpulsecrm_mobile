@@ -9,8 +9,6 @@ class SearchProductView extends GetView<SearchProductController> {
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    final double screenHeight = mediaQueryData.size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(

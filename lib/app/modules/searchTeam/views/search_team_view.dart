@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 
 import '../controllers/search_team_controller.dart';
 
-
-
 class SearchTeamView extends GetView<SearchTeamController> {
   const SearchTeamView({super.key});
 

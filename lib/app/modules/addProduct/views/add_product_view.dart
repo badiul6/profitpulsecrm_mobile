@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:profitpulsecrm_mobile/app/modules/addSale/controllers/add_sale_controller.dart';
-import 'package:profitpulsecrm_mobile/app/views/search_field_view.dart';
-
 import '../controllers/add_product_controller.dart';
 
 class AddProductView extends GetView<AddProductController> {

@@ -5,12 +5,10 @@ import 'package:get/get.dart';
 import '../controllers/search_contact_controller.dart';
 
 class SearchContactView extends GetView<SearchContactController> {
-  SearchContactView({super.key});
+  const SearchContactView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    final double screenHeight = mediaQueryData.size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(

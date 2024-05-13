@@ -13,7 +13,7 @@ class SplashScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Timer(const Duration(seconds: 3),()async{
+    Timer(const Duration(seconds: 2),()async{
 
          String? cookie= await storage.read(key: 'cookie');
          String? role= await storage.read(key: 'role');

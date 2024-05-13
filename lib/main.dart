@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -9,6 +11,8 @@ import 'app/routes/app_pages.dart';
 Future<void> main() async {
 
     WidgetsFlutterBinding.ensureInitialized();
+       HttpOverrides.global = MyHttpOverrides();
+
     await dotenv.load(fileName: ".env");
   ImageUtils.svgPrecacheImage();
   runApp(
@@ -39,6 +43,13 @@ Future<void> main() async {
   );
 }
 
+ class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   Map<int, Color> swatch = {};
